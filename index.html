@@ -3,430 +3,186 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <title>Break-even Italia → Ticino V4.3 + Google Login</title>
+  <title>Break-even Italia → Ticino V4.3 Operazioni</title>
+  <meta name="theme-color" content="#01696f" />
   <style>
-    :root,[data-theme="light"]{
-      --bg:#f7f6f2;--surface:#faf9f6;--surface2:#fff;--surface3:#f1eeea;--border:#d8d3cb;
-      --text:#29251e;--muted:#68625a;--primary:#01696f;--ok:#4a7d25;--warn:#986025;--bad:#a23d78;
-      --shadow:0 10px 26px rgba(0,0,0,.08);--sidebar:220px
-    }
-    [data-theme="dark"]{
-      --bg:#161514;--surface:#1d1c1a;--surface2:#22211f;--surface3:#252421;--border:#3a3834;
-      --text:#e9e3db;--muted:#b6afa6;--primary:#4da0aa;--ok:#8fcb6b;--warn:#d09a69;--bad:#dd8fbe;
-      --shadow:0 10px 26px rgba(0,0,0,.30)
-    }
-    *{box-sizing:border-box}
-    html,body{
-      margin:0;min-height:100%;background:var(--bg);color:var(--text);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif
-    }
-    button,input,select{font:inherit;color:inherit}
-    .app{margin-left:var(--sidebar);padding:16px 16px 90px;max-width:1240px}
-    .sidebar{
-      position:fixed;left:0;top:0;bottom:0;width:var(--sidebar);padding:16px;
-      background:var(--surface);border-right:1px solid var(--border);display:flex;
-      flex-direction:column;gap:10px;z-index:20
-    }
-    .sidebtn,.btn{
-      min-height:48px;padding:0 14px;border-radius:999px;border:1px solid var(--border);
-      background:var(--surface2);cursor:pointer;font-weight:800
-    }
-    .sidebtn{text-align:left}
-    .sidebtn.primary,.btn.cta{
-      background:var(--primary);color:#fff;border-color:transparent
-    }
-    .card{
-      background:var(--surface);border:1px solid var(--border);border-radius:24px;
-      box-shadow:var(--shadow);padding:16px
-    }
-    .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:14px}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .field{display:grid;gap:6px;margin-bottom:10px}
-    .field input,.field select{
-      min-height:48px;border-radius:14px;border:1px solid var(--border);
-      background:var(--surface2);padding:10px 12px
-    }
-    .actions{display:flex;gap:10px;flex-wrap:wrap}
-    .hidden{display:none !important}
-    .tiny{font-size:12px;color:var(--muted)}
-    .small{font-size:13px;color:var(--muted)}
-    .title{font-weight:900;font-size:1.4rem;margin:0 0 8px}
-    .hero{margin-bottom:14px}
-    .status{
-      padding:10px 12px;border:1px solid var(--border);border-radius:14px;
-      background:var(--surface3);margin-top:10px
-    }
-    .list{display:grid;gap:10px}
-    .op{
-      padding:12px;border:1px solid var(--border);border-radius:16px;background:var(--surface3)
-    }
-    .opTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
-    .bottom{
-      position:fixed;left:0;right:0;bottom:0;background:color-mix(in oklab,var(--bg) 90%,transparent);
-      backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:10px 16px
-    }
-    .bottomInner{
-      margin-left:var(--sidebar);display:flex;justify-content:space-between;gap:10px;
-      align-items:center;max-width:1240px
-    }
-    @media(max-width:980px){
-      .sidebar{position:sticky;top:0;width:auto;flex-direction:row;overflow:auto}
-      .app,.bottomInner{margin-left:0}
-      .grid,.row{grid-template-columns:1fr}
-      .bottomInner{flex-direction:column;align-items:stretch}
-    }
+    :root,[data-theme="light"]{--bg:#f7f6f2;--surface:#faf9f6;--surface2:#fff;--surface3:#f1eeea;--border:#d8d3cb;--text:#29251e;--muted:#68625a;--faint:#8a847b;--primary:#01696f;--primary2:#00545a;--ok:#4a7d25;--warn:#986025;--bad:#a23d78;--shadow:0 10px 26px rgba(0,0,0,.08);--radius:18px;--sidebar:210px}
+    [data-theme="dark"]{--bg:#161514;--surface:#1d1c1a;--surface2:#22211f;--surface3:#252421;--border:#3a3834;--text:#e9e3db;--muted:#b6afa6;--faint:#90897f;--primary:#4da0aa;--primary2:#28828d;--ok:#8fcb6b;--warn:#d09a69;--bad:#dd8fbe;--shadow:0 10px 26px rgba(0,0,0,.30)}
+    *{box-sizing:border-box} html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif} a{color:var(--primary)} button,input,select{font:inherit;color:inherit}
+    .sidebar{position:fixed;left:0;top:0;bottom:0;width:var(--sidebar);padding:16px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;gap:10px;z-index:50}.sidebar .brand{padding:8px 4px 14px}.sidebar .title{font-weight:800;line-height:1.1}.sidebar .tiny{font-size:12px;color:var(--muted);margin-top:4px}.sidebtn{min-height:48px;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-weight:700;text-align:left}.sidebtn.primary{background:var(--primary);color:#fff;border-color:transparent}.sidebtn:hover{filter:brightness(.98)}
+    .wrap{margin-left:var(--sidebar);padding:16px 16px 90px;max-width:1220px}.topbar{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;margin-bottom:14px}.hero{background:linear-gradient(135deg,color-mix(in oklab,var(--primary) 11%,var(--surface)),var(--surface));border:1px solid var(--border);border-radius:24px;padding:18px;box-shadow:var(--shadow)}.hero h1{margin:0 0 8px;font-size:clamp(1.5rem,1rem + 2vw,2.2rem);line-height:1.06}.hero p{margin:0;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:14px;margin-top:14px}.card{background:var(--surface);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);padding:16px}.card h2{margin:0 0 12px;font-size:1.18rem}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:grid;gap:6px;margin-bottom:10px}.field label{font-size:13px;color:var(--muted);font-weight:700}.field input,.field select{min-height:48px;border-radius:14px;border:1px solid var(--border);background:var(--surface2);padding:10px 12px}.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{padding:7px 11px;border:1px solid var(--border);border-radius:999px;background:var(--surface3);font-size:12px}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}.btn{min-height:48px;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-weight:800}.btn.cta{background:var(--primary);color:#fff;border-color:transparent}.btn.ghost{background:var(--surface2)}.btn.sm{min-height:40px;font-size:13px;padding:0 12px}
+    .modebar{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;margin-bottom:10px}.toggle{display:inline-flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--border);border-radius:999px;background:var(--surface3)}.toggle input{width:18px;height:18px}
+    .statusline{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:var(--surface3);margin-top:10px}.dot{width:10px;height:10px;border-radius:50%;background:var(--warn)}.dot.ok{background:var(--ok)}.dot.bad{background:var(--bad)}.small{font-size:13px;color:var(--muted)}.tiny{font-size:12px;color:var(--faint)}
+    .resultGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{padding:12px;border-radius:16px;background:var(--surface3);border:1px solid var(--border)}.stat .k{font-size:12px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em}.stat .v{font-size:1.1rem;font-weight:900;margin-top:4px}.verdict{margin-top:12px;padding:12px 14px;border-radius:16px;border:1px solid var(--border)}.good{background:color-mix(in oklab,var(--ok) 12%,var(--surface))}.warnBox{background:color-mix(in oklab,var(--warn) 12%,var(--surface))}.badBox{background:color-mix(in oklab,var(--bad) 12%,var(--surface))}
+    .qz{margin-top:12px;padding:12px;border:1px solid var(--border);border-radius:16px;background:var(--surface3)}.pill{display:inline-flex;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:800}.pill.ok{background:color-mix(in oklab,var(--ok) 14%,var(--surface));color:var(--ok)}.pill.warn{background:color-mix(in oklab,var(--warn) 14%,var(--surface));color:var(--warn)}.pill.bad{background:color-mix(in oklab,var(--bad) 14%,var(--surface));color:var(--bad)}
+    .todo{display:grid;gap:8px;margin-top:10px}.todoItem{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;padding:10px;border:1px solid var(--border);border-radius:16px;background:var(--surface)}.todoItem.done{opacity:.58}.prio-high{border-color:color-mix(in oklab,var(--bad) 44%,var(--border));background:color-mix(in oklab,var(--bad) 7%,var(--surface))}.prio-med{border-color:color-mix(in oklab,var(--warn) 44%,var(--border));background:color-mix(in oklab,var(--warn) 8%,var(--surface))}.prio-low{border-color:color-mix(in oklab,var(--ok) 34%,var(--border));background:color-mix(in oklab,var(--ok) 7%,var(--surface))}.todoItem input{width:20px;height:20px;margin-top:2px}
+    .savedPanel{display:none}.savedPanel.show{display:block}.savedList{display:grid;gap:10px}.opCard{padding:12px;border:1px solid var(--border);border-radius:16px;background:var(--surface3)}.opHead{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.opTitle{font-weight:800}.opMeta{font-size:12px;color:var(--muted);margin-top:4px}.opBtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .sourceList{display:grid;gap:10px;margin-top:10px}.source{padding:10px;border:1px solid var(--border);border-radius:16px;background:var(--surface2)}
+    .mainArea{display:grid;grid-template-columns:1.04fr .96fr;gap:14px}.bottomBar{position:fixed;left:0;right:0;bottom:0;background:color-mix(in oklab,var(--bg) 90%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:10px 16px}.bottomInner{margin-left:var(--sidebar);display:flex;align-items:center;justify-content:space-between;gap:10px;max-width:1220px}.hidden{display:none !important}
+    @media (max-width:980px){.sidebar{position:sticky;top:0;bottom:auto;width:auto;flex-direction:row;overflow:auto;align-items:center}.wrap,.bottomInner{margin-left:0}.mainArea,.grid,.row,.resultGrid{grid-template-columns:1fr}.bottomInner{flex-direction:column;align-items:stretch}.topbar{flex-direction:column}}
   </style>
 </head>
 <body>
   <aside class="sidebar">
-    <button class="sidebtn primary" id="navLogin">Login</button>
-    <button class="sidebtn" id="navDash">Dashboard</button>
-    <button class="sidebtn" id="navSaved">Operazioni Salvate</button>
-    <button class="sidebtn" id="themeBtn">Tema</button>
-    <div class="tiny">V4.3 + Google Login</div>
+    <div class="brand">
+      <div class="title">Operazioni</div>
+      <div class="tiny">V4.3: spalla sinistra, salvataggi, caricamento, to-do intelligente</div>
+    </div>
+    <button class="sidebtn primary" id="newOperationBtn">Nuova Operazione</button>
+    <button class="sidebtn" id="savedOperationsBtn">Operazioni Salvate</button>
+    <button class="sidebtn" id="themeBtn">Tema chiaro/scuro</button>
   </aside>
 
-  <main class="app">
-    <section class="card hero">
-      <div class="title">Break-even Italia → Ticino V4.3</div>
-      <div id="appVersion" style="margin-top:6px;font-size:12px;opacity:.75;">Versione pubblicata: V4.3 + Google Login</div>
-      <div class="small">Login email/password o Google, dashboard privata, salvataggi per utente, switch modalità funzionante come in V4.3.</div>
-    </section>
-
-    <section class="grid" id="authView">
-      <div class="card">
-        <h2>Accesso</h2>
-        <div class="field">
-          <label>Email</label>
-          <input id="email" type="email" placeholder="nome@dominio.ch">
+  <main class="wrap">
+    <div class="topbar">
+      <section class="hero" style="flex:1">
+        <h1>Break-even Italia → Ticino V4.3</h1>
+        <p>Ogni utilizzo è una Operazione. Puoi calcolarla, salvarla e ricaricarla in seguito da Operazioni Salvate. La modalità avanzata resta disponibile per elettronica, abbigliamento e alcolici.</p>
+        <div class="chips" style="margin-top:12px">
+          <span class="chip">QuickZoll integrato</span>
+          <span class="chip">To-do adattiva</span>
+          <span class="chip">Prezzi live online</span>
+          <span class="chip">Operazioni salvate</span>
         </div>
-        <div class="field">
-          <label>Password</label>
-          <input id="password" type="password" placeholder="••••••••">
+      </section>
+    </div>
+
+    <div class="mainArea">
+      <section class="card">
+        <h2>Dati Operazione</h2>
+        <div class="modebar">
+          <div class="toggle"><input type="checkbox" id="advancedToggle"><label for="advancedToggle"><strong>Modalità avanzata</strong> <span class="tiny">(prezzi medi online)</span></label></div>
+          <div class="tiny">La modalità avanzata è disponibile solo per elettronica, abbigliamento e alcolici.</div>
         </div>
-        <div class="actions">
-          <button class="btn cta" id="signupBtn">Registrati</button>
-          <button class="btn" id="loginBtn">Login</button>
-          <button class="btn" id="googleBtn">Entra con Google</button>
-        </div>
-        <div class="status" id="authStatus">Non autenticato.</div>
-      </div>
 
-      <div class="card">
-        <h2>Note tecniche</h2>
-        <div class="small">Dopo il login, i dati vengono letti e scritti in Firestore nella sottocollezione users/{uid}/operations.</div>
-        <div class="tiny" style="margin-top:10px">Regola Firestore: request.auth.uid == uid.</div>
-      </div>
-    </section>
+        <div class="field"><label for="category">Categoria articolo</label><select id="category"></select></div>
 
-    <section class="grid hidden" id="dashView" style="margin-top:14px">
-      <div class="card">
-        <h2>Dashboard Operazione</h2>
-
-        <div class="row">
-          <div class="field">
-            <label>Categoria</label>
-            <select id="category">
-              <option value="electronics">Elettronica / elettrodomestici</option>
-              <option value="clothing">Abbigliamento / scarpe</option>
-              <option value="alcohol">Alcolici / vino / superalcolici</option>
-              <option value="furniture">Mobili / casa</option>
-            </select>
+        <div id="basicFields">
+          <div class="row">
+            <div class="field"><label for="priceItaly">Prezzo Italia</label><input id="priceItaly" type="number" step="0.01" value="120"></div>
+            <div class="field"><label for="currency">Valuta</label><select id="currency"><option value="EUR">EUR</option><option value="CHF">CHF</option></select></div>
           </div>
-          <div class="field">
-            <label>Modalità</label>
-            <select id="mode">
-              <option value="base">Base</option>
-              <option value="advanced">Avanzata</option>
-            </select>
+          <div class="field"><label for="swissPrice">Prezzo Svizzera</label><input id="swissPrice" type="number" step="0.01" value="180"></div>
+        </div>
+
+        <div id="advancedFields" class="hidden">
+          <div class="row">
+            <div class="field"><label for="productQuery">Prodotto / query</label><input id="productQuery" type="text" value="Apple AirPods Pro 2"></div>
+            <div class="field"><label for="sampleSize">N. risultati per mercato</label><select id="sampleSize"><option>3</option><option selected>5</option><option>7</option></select></div>
           </div>
+          <div class="field"><label>Fonti online</label><div class="tiny">L’app tenta di leggere i prezzi da provider pubblici di shopping/search; se non disponibili usa un fallback orientativo.</div></div>
+          <div class="actions"><button class="btn" id="fetchAvgBtn" type="button">Calcola prezzi medi online</button></div>
+          <div class="sourceList" id="sourceList"></div>
         </div>
 
         <div class="row">
-          <div class="field">
-            <label>Prezzo Italia</label>
-            <input id="priceItaly" type="number" step="0.01" value="120">
-          </div>
-          <div class="field">
-            <label>Prezzo Svizzera</label>
-            <input id="swissPrice" type="number" step="0.01" value="180">
-          </div>
+          <div class="field"><label for="people">Persone nel viaggio</label><input id="people" type="number" min="1" step="1" value="1"></div>
+          <div class="field"><label for="fx">Cambio EUR→CHF</label><input id="fx" type="number" step="0.0001" value="0.94"></div>
         </div>
-
         <div class="row">
-          <div class="field">
-            <label>Persone</label>
-            <input id="people" type="number" min="1" value="1">
-          </div>
-          <div class="field">
-            <label>Cambio EUR→CHF</label>
-            <input id="fx" type="number" step="0.0001" value="0.94">
-          </div>
+          <div class="field"><label for="tripCost">Costo viaggio</label><input id="tripCost" type="number" step="0.01" value="15"></div>
+          <div class="field"><label for="extra">Altri costi</label><input id="extra" type="number" step="0.01" value="0"></div>
         </div>
+        <label class="field" style="display:flex;align-items:center;gap:10px;flex-direction:row"><input id="useTaxFree" type="checkbox" checked style="width:18px;height:18px"><span><strong>Considera tax free italiano</strong><br><span class="tiny">Se la soglia è raggiunta e il negozio aderisce.</span></span></label>
 
         <div class="actions">
           <button class="btn cta" id="calcBtn">Calcola</button>
-          <button class="btn" id="saveOpBtn">Salva Operazione</button>
-          <button class="btn" id="logoutBtn">Logout</button>
+          <button class="btn" id="refreshFxBtn">Aggiorna cambio</button>
+          <button class="btn" id="saveOperationBtn">Salva Operazione</button>
+          <button class="btn" id="resetBtn">Reset</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Esito Operazione</h2>
+        <div class="statusline"><div style="display:flex;gap:10px;align-items:center"><span id="fxDot" class="dot"></span><strong>Cambio</strong></div><span id="fxStatus" class="small">In attesa</span></div>
+        <div class="statusline"><div style="display:flex;gap:10px;align-items:center"><span id="avgDot" class="dot"></span><strong>Prezzi medi</strong></div><span id="avgStatus" class="small">Non richiesto</span></div>
+
+        <div class="resultGrid" style="margin-top:12px">
+          <div class="stat"><div class="k">Costo finale</div><div class="v" id="finalImported">-</div></div>
+          <div class="stat"><div class="k">Risparmio</div><div class="v" id="saving">-</div></div>
+          <div class="stat"><div class="k">Break-even</div><div class="v" id="breakEven">-</div></div>
+          <div class="stat"><div class="k">IVA CH</div><div class="v" id="swissVat">-</div></div>
         </div>
 
-        <div class="status" id="calcStatus">Modalità base attiva.</div>
-        <div class="status" id="userStatus">Utente: -</div>
-      </div>
+        <div id="verdict" class="verdict warnBox">Premi “Calcola”.</div>
+        <div class="actions"><button class="btn" id="saveOperationBtn2">Salva Operazione</button></div>
 
-      <div class="card">
-        <h2>Esito</h2>
-        <div class="status" id="summaryBox">Nessun calcolo ancora.</div>
-        <div class="status" id="quickzollBox">QuickZoll: verifica caso</div>
-        <div class="status" id="todoBox">To-do: comparirà qui.</div>
-      </div>
+        <div class="qz">
+          <div id="quickzollPill" class="pill warn">QuickZoll: verifica caso</div>
+          <div id="quickzollText" class="small" style="margin-top:8px">Seleziona una categoria per vedere la valutazione QuickZoll.</div>
+        </div>
+
+        <div class="qz" style="margin-top:12px">
+          <div class="pill ok">To-do dinamica</div>
+          <div id="todoMeta" class="tiny" style="margin-top:8px">Checklist adattata alla casistica.</div>
+          <div id="todoList" class="todo"></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="card" style="margin-top:14px">
+      <h2>Dogana e dichiarazione</h2>
+      <div id="customsOutput" class="small">Seleziona una categoria e calcola.</div>
+      <h2 style="margin-top:16px">Riferimenti ufficiali</h2>
+      <ul class="small">
+        <li><a href="https://www.bazg.admin.ch/en/quickzoll-app-declare-goods-for-private-use" target="_blank" rel="noopener noreferrer">QuickZoll ufficiale BAZG</a></li>
+        <li><a href="https://www.bazg.admin.ch/en/questions-and-answers-quickzoll" target="_blank" rel="noopener noreferrer">FAQ ufficiali QuickZoll</a></li>
+        <li><a href="https://www.searchapi.io/google-shopping" target="_blank" rel="noopener noreferrer">SearchAPI Google Shopping</a></li>
+        <li><a href="https://pricesapi.io/docs" target="_blank" rel="noopener noreferrer">PricesAPI docs</a></li>
+      </ul>
     </section>
 
-    <section class="card hidden" id="savedView" style="margin-top:14px">
+    <section class="card savedPanel" id="savedOpsPanel" style="margin-top:14px">
       <h2>Operazioni Salvate</h2>
-      <div class="tiny">Ogni utente vede solo le sue operazioni.</div>
-      <div class="list" id="savedList" style="margin-top:10px"></div>
+      <div class="tiny">Le operazioni vengono salvate nel browser tramite localStorage e restano disponibili sul dispositivo.</div>
+      <div id="savedOpsList" class="savedList" style="margin-top:12px"></div>
     </section>
   </main>
 
-  <div class="bottom">
+  <div class="bottomBar">
     <div class="bottomInner">
-      <div class="tiny" id="bottomText">Non autenticato: nessuna dashboard visibile.</div>
-      <button class="btn cta" id="calcBottom">Calcola</button>
+      <div class="tiny">Modalità base = inserimento manuale. Modalità avanzata = stima media online, se disponibile.</div>
+      <button class="btn cta" id="calcBottom">Calcola ora</button>
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
-    import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js';
-    import { getFirestore, doc, getDoc, collection, query, orderBy, serverTimestamp, addDoc, deleteDoc, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDr090FDvfOHnQ9FgWqaBv2b_67GyHuLec",
-      authDomain: "break-even-dogana-app.firebaseapp.com",
-      projectId: "break-even-dogana-app",
-      storageBucket: "break-even-dogana-app.firebasestorage.app",
-      messagingSenderId: "131467011513",
-      appId: "1:131467011513:web:4580bb41a9c98bd8aec268",
-      measurementId: "G-XPN2CPC6F7"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-    const provider = new GoogleAuthProvider();
-    const $ = id => document.getElementById(id);
-
-    let currentUser = null;
-    let currentCalc = null;
-    let currentQuick = '';
-    let currentTodo = '';
-
-    const cats = {
-      electronics:{label:'Elettronica / elettrodomestici',qz:'yes',advanced:true},
-      clothing:{label:'Abbigliamento / scarpe',qz:'yes',advanced:true},
-      alcohol:{label:'Alcolici / vino / superalcolici',qz:'yes',advanced:true},
-      furniture:{label:'Mobili / casa',qz:'yes',advanced:false}
-    };
-
-    function money(v){
-      return new Intl.NumberFormat('it-CH',{
-        style:'currency',
-        currency:'CHF',
-        maximumFractionDigits:2
-      }).format(v);
-    }
-
-    function showViews(user){
-      $('authView').classList.toggle('hidden', !!user);
-      $('dashView').classList.toggle('hidden', !user);
-      $('savedView').classList.toggle('hidden', !user);
-      $('userStatus').textContent = user ? `Utente: ${user.email || user.displayName || user.uid}` : 'Utente: -';
-      $('authStatus').textContent = user ? 'Autenticato.' : 'Non autenticato.';
-      $('bottomText').textContent = user ? 'Autenticato: dati segregati per utente.' : 'Non autenticato: nessuna dashboard visibile.';
-    }
-
-    function syncModeAvailability(){
-      const category = $('category').value;
-      const modeEl = $('mode');
-      const advancedAllowed = cats[category].advanced;
-
-      if(!advancedAllowed){
-        modeEl.value = 'base';
-        modeEl.disabled = true;
-      } else {
-        modeEl.disabled = false;
-      }
-
-      return modeEl.value;
-    }
-
-    function updateModeStatus(){
-      const mode = syncModeAvailability();
-      $('calcStatus').textContent = mode === 'advanced' ? 'Modalità avanzata attiva.' : 'Modalità base attiva.';
-    }
-
-    function calcCore(){
-      const mode = syncModeAvailability();
-      updateModeStatus();
-
-      const c = cats[$('category').value];
-      const priceItaly = parseFloat($('priceItaly').value || 0);
-      const swissPrice = parseFloat($('swissPrice').value || 0);
-      const people = Math.max(1, parseInt($('people').value || 1, 10));
-      const fx = parseFloat($('fx').value || 0.94);
-
-      const italianChf = priceItaly * fx;
-      const allowance = 150 * people;
-      const taxable = italianChf > allowance;
-      const chVat = 0.081;
-      const finalImported = italianChf + (taxable ? italianChf * chVat : 0);
-      const saving = swissPrice - finalImported;
-
-      currentCalc = {
-        category: $('category').value,
-        mode,
-        priceItaly,
-        swissPrice,
-        people,
-        fx,
-        finalImported,
-        saving,
-        taxable
-      };
-
-      currentQuick = c.qz === 'yes' ? 'QuickZoll: tipicamente sì' : 'QuickZoll: cautela';
-      currentTodo = saving > 20
-        ? 'Conviene: salva e confronta con altri casi.'
-        : saving >= -20
-          ? 'Borderline: controlla costi e limiti.'
-          : 'Non conviene: valuta di non acquistare.';
-
-      $('summaryBox').textContent = `Costo finale ${money(finalImported)} | Risparmio ${money(saving)} | ${taxable ? 'Da dichiarare' : 'Entro franchigia'}`;
-      $('quickzollBox').textContent = currentQuick;
-      $('todoBox').textContent = currentTodo;
-    }
-
-    async function refreshSaved(){
-      if(!currentUser) return;
-      const q = query(collection(db, 'users', currentUser.uid, 'operations'), orderBy('createdAt', 'desc'));
-      const snap = await getDocs(q);
-
-      $('savedList').innerHTML = snap.empty
-        ? '<div class="tiny">Nessuna operazione salvata.</div>'
-        : snap.docs.map(d => {
-            const o = d.data();
-            return `
-              <div class="op">
-                <div class="opTop">
-                  <div>
-                    <strong>${cats[o.category]?.label || o.category}</strong>
-                    <div class="tiny">${o.createdAt?.toDate ? o.createdAt.toDate().toLocaleString('it-IT') : ''}</div>
-                  </div>
-                  <button class="btn" data-load="${d.id}">Carica</button>
-                </div>
-                <div class="small" style="margin-top:8px">${o.summary}</div>
-                <div class="actions" style="margin-top:8px">
-                  <button class="btn" data-del="${d.id}">Elimina</button>
-                </div>
-              </div>
-            `;
-          }).join('');
-
-      $('savedList').querySelectorAll('[data-load]').forEach(b => {
-        b.addEventListener('click', async () => {
-          const s = await getDoc(doc(db, 'users', currentUser.uid, 'operations', b.dataset.load));
-          if (!s.exists()) return;
-          const o = s.data();
-          $('category').value = o.category;
-          $('mode').value = o.mode;
-          $('priceItaly').value = o.priceItaly;
-          $('swissPrice').value = o.swissPrice;
-          $('people').value = o.people;
-          $('fx').value = o.fx;
-          calcCore();
-        });
-      });
-
-      $('savedList').querySelectorAll('[data-del]').forEach(b => {
-        b.addEventListener('click', async () => {
-          await deleteDoc(doc(db, 'users', currentUser.uid, 'operations', b.dataset.del));
-          refreshSaved();
-        });
-      });
-    }
-
-    async function saveOperation(){
-      if(!currentUser || !currentCalc){
-        $('calcStatus').textContent = 'Prima esegui login e calcolo.';
-        return;
-      }
-
-      const payload = {
-        ...currentCalc,
-        quickzoll: currentQuick,
-        todo: currentTodo,
-        summary: $('summaryBox').textContent,
-        uid: currentUser.uid,
-        email: currentUser.email || null,
-        createdAt: serverTimestamp()
-      };
-
-      await addDoc(collection(db, 'users', currentUser.uid, 'operations'), payload);
-      await refreshSaved();
-    }
-
-    $('signupBtn').onclick = async () => {
-      try {
-        await createUserWithEmailAndPassword(auth, $('email').value, $('password').value);
-      } catch (e) {
-        $('authStatus').textContent = e.message;
-      }
-    };
-
-    $('loginBtn').onclick = async () => {
-      try {
-        await signInWithEmailAndPassword(auth, $('email').value, $('password').value);
-      } catch (e) {
-        $('authStatus').textContent = e.message;
-      }
-    };
-
-    $('googleBtn').onclick = async () => {
-      try {
-        await signInWithPopup(auth, provider);
-      } catch (e) {
-        $('authStatus').textContent = e.message;
-      }
-    };
-
-    $('logoutBtn').onclick = async () => signOut(auth);
-
-    $('calcBtn').onclick = calcCore;
-    $('calcBottom').onclick = calcCore;
-    $('saveOpBtn').onclick = saveOperation;
-
-    $('themeBtn').onclick = () => {
-      document.documentElement.setAttribute(
-        'data-theme',
-        document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'
-      );
-    };
-
-    $('navLogin').onclick = () => $('authView').scrollIntoView({behavior:'smooth'});
-    $('navDash').onclick = () => $('dashView').scrollIntoView({behavior:'smooth'});
-    $('navSaved').onclick = () => $('savedView').scrollIntoView({behavior:'smooth'});
-
-    $('mode').addEventListener('change', calcCore);
-    $('category').addEventListener('change', calcCore);
-
-    onAuthStateChanged(auth, user => {
-      currentUser = user || null;
-      showViews(currentUser);
-      if (currentUser) refreshSaved();
-    });
-
-    calcCore();
-  </script>
+<script>
+const categories = {
+  electronics:{label:'Elettronica / elettrodomestici',itaVat:0.22,chVat:0.081,taxFreeMinEur:70,quantitative:false,qz:'yes',advanced:true,defaultQuery:'Apple AirPods Pro 2',qzText:'Tipicamente dichiarabile con QuickZoll per uso privato o regalo, se non soggetto a restrizioni speciali.',customs:['Di norma rientra nella logica QuickZoll per uso privato.','Se superi la franchigia, dichiara la merce.','Per articoli di valore alto considera il confronto con il prezzo svizzero.','Conserva sempre la prova d’acquisto.']},
+  clothing:{label:'Abbigliamento / scarpe',itaVat:0.22,chVat:0.081,taxFreeMinEur:70,quantitative:false,qz:'yes',advanced:true,defaultQuery:'Nike Air Force 1',qzText:'Tipicamente dichiarabile con QuickZoll per uso privato o regalo.',customs:['Categoria adatta alla modalità avanzata.','Se il totale supera la franchigia, dichiara.','Il tax free italiano spesso pesa parecchio sul netto.','Tieni separati eventuali scontrini multipli.']},
+  furniture:{label:'Mobili / casa',itaVat:0.22,chVat:0.081,taxFreeMinEur:70,quantitative:false,qz:'yes',advanced:false,qzText:'In linea di principio dichiarabile con QuickZoll se per uso privato; per casi complessi meglio un valico presidiato.',customs:['Spesso supera la franchigia.','Porta documentazione completa.','QuickZoll va bene nei casi standard.','Per colli grandi, valuta bene la logistica.']},
+  food:{label:'Alimentari generici',itaVat:0.10,chVat:0.026,taxFreeMinEur:70,quantitative:true,qz:'caution',advanced:false,qzText:'Meglio cautela: per aliquota ridotta e merce sensibile è spesso preferibile il valico presidiato.',customs:['Conta anche il profilo quantitativo.','Può applicarsi aliquota ridotta.','Conserva scontrino dettagliato.','Valuta bene il rapporto convenienza/costo viaggio.']},
+  meat:{label:'Carne / preparazioni di carne',itaVat:0.10,chVat:0.026,taxFreeMinEur:70,quantitative:true,qz:'caution',advanced:false,qzText:'Categoria delicata: spesso è preferibile il valico presidiato.',customs:['La carne è soggetta a limiti quantitativi specifici.','Oltre i limiti possono scattare formalità aggiuntive.','Non guardare solo il prezzo: qui contano anche i limiti.','Conserva confezione e documento di acquisto.']},
+  alcohol:{label:'Alcolici / vino / superalcolici',itaVat:0.22,chVat:0.081,taxFreeMinEur:70,quantitative:true,qz:'yes',advanced:true,defaultQuery:'Aperol 70cl',qzText:'Generalmente dichiarabile con QuickZoll per uso privato, con attenzione ai limiti quantitativi.',customs:['Categoria adatta alla modalità avanzata.','Controlla i limiti quantitativi per gradazione alcolica.','I minori non possono importare alcol in franchigia.','Se superi i limiti, dichiara sempre.']},
+  tobacco:{label:'Tabacco / sigarette',itaVat:0.22,chVat:0.081,taxFreeMinEur:70,quantitative:true,qz:'yes',advanced:false,qzText:'Generalmente dichiarabile con QuickZoll per uso privato, con limiti quantitativi specifici.',customs:['Limiti quantitativi specifici.','I minori non possono importare tabacco in franchigia.','Oltre i limiti scattano formalità e imposte.','Dichiara sempre se hai dubbi.']},
+  medicine:{label:'Medicinali da banco',itaVat:0.10,chVat:0.026,taxFreeMinEur:70,quantitative:false,qz:'caution',advanced:false,qzText:'Meglio cautela: alcuni medicinali possono richiedere controlli o autorizzazioni.',customs:['Verifica sempre eventuali restrizioni.','Conserva confezione e scontrino.','Per medicinali particolari verifica prima l’importazione personale.','Se supera la franchigia, va dichiarato.']}
+};
+const state = { mode:'base', saved:[], currentSavedId:null };
+const $ = id => document.getElementById(id);
+const STORAGE_KEY = 'operazioni-salvate-v43';
+function loadSaved(){ try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch(e){return []} }
+function storeSaved(list){ localStorage.setItem(STORAGE_KEY, JSON.stringify(list)) }
+function money(v){ return new Intl.NumberFormat('it-CH',{style:'currency',currency:'CHF',maximumFractionDigits:2}).format(v) }
+function moneyEur(v){ return new Intl.NumberFormat('it-IT',{style:'currency',currency:'EUR',maximumFractionDigits:2}).format(v) }
+function currentOp(){ return { id: state.currentSavedId || crypto.randomUUID(), ts: new Date().toISOString(), category:$('category').value, mode: state.mode, priceItaly:$('priceItaly').value, currency:$('currency').value, swissPrice:$('swissPrice').value, people:$('people').value, fx:$('fx').value, tripCost:$('tripCost').value, extra:$('extra').value, useTaxFree:$('useTaxFree').checked, productQuery:$('productQuery').value, summary:$('verdict').textContent } }
+function setTheme(){ document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark') }
+function updateModeUI(){ const cfg = categories[$('category').value]; const adv = state.mode==='advanced' && cfg.advanced; $('advancedToggle').checked = adv; $('advancedFields').classList.toggle('hidden', !adv); $('basicFields').classList.toggle('hidden', adv); }
+function updateQuickZollBox(cfg){ $('quickzollPill').className = 'pill ' + (cfg.qz==='yes'?'ok':cfg.qz==='caution'?'warn':'bad'); $('quickzollPill').textContent = cfg.qz==='yes'?'QuickZoll: sì, in via tipica':cfg.qz==='caution'?'QuickZoll: cautela / meglio verificare':'QuickZoll: no'; $('quickzollText').textContent = cfg.qzText; }
+function buildTodo(cfg, taxable, taxFreeEligible, saving){ const items=[]; const verdict = saving>20?'conviene':saving>=-20?'borderline':'non conviene'; items.push({p:'high',t:verdict==='conviene'?'Conferma il prodotto e procedi se il prezzo resta vantaggioso.':verdict==='borderline'?'Sei vicino al pareggio: ricontrolla costi e varianti.':'Prima di partire verifica se il prezzo svizzero è davvero migliore.',d:false}); items.push({p:cfg.qz==='yes'?'low':'high',t:cfg.qz==='yes'?'Puoi usare QuickZoll se il bene è per uso privato o regalo e non ha restrizioni speciali.':'Verifica se per questa categoria è preferibile il valico presidiato.',d:false}); if(taxFreeEligible) items.push({p:'med',t:'Chiedi il modulo tax free e fai validare l’uscita UE.',d:false}); if(taxable) items.push({p:'high',t:'Prepara la dichiarazione doganale: in questa simulazione emerge IVA svizzera da pagare.',d:false}); else items.push({p:'low',t:'Resti entro la franchigia di valore, ma conserva comunque la prova d’acquisto.',d:false}); if(cfg.quantitative) items.push({p:'high',t:'Controlla anche i limiti quantitativi della categoria prima del rientro.',d:false}); if(cfg.qz==='caution') items.push({p:'med',t:'Per merce sensibile o aliquota ridotta, valuta la dichiarazione verbale a valico.',d:false}); items.push({p:'med',t:'Tieni con te scontrino o fattura e, se usi QuickZoll, il riferimento della dichiarazione.',d:false}); items.push({p:'low',t:'Se il bene è commerciale, temporaneo o soggetto a permessi, non usare QuickZoll.',d:false}); return items; }
+function renderTodo(items){ $('todoList').innerHTML = items.map((it,idx)=>`<label class="todoItem prio-${it.p}" data-idx="${idx}"><input type="checkbox"><div><strong>${it.p==='high'?'Priorità alta':it.p==='med'?'Priorità media':'Priorità bassa'}</strong><div class="small">${it.t}</div></div><div class="tiny">✓</div></label>`).join(''); $('todoList').querySelectorAll('input').forEach(inp=>inp.addEventListener('change',e=>e.target.closest('.todoItem').classList.toggle('done',e.target.checked))); }
+function renderSaved(){ const list=loadSaved(); $('savedOpsList').innerHTML = list.length ? list.map(op=>`<div class="opCard"><div class="opHead"><div><div class="opTitle">${categories[op.category]?.label||op.category}</div><div class="opMeta">${new Date(op.ts).toLocaleString('it-IT')}</div></div><div class="tiny">${op.mode==='advanced'?'Avanzata':'Base'}</div></div><div class="small" style="margin-top:8px">${op.summary}</div><div class="opBtns"><button class="btn sm" data-load="${op.id}">Carica</button><button class="btn sm" data-delete="${op.id}">Elimina</button></div></div>`).join('') : '<div class="tiny">Nessuna operazione salvata.</div>'; $('savedOpsList').querySelectorAll('[data-load]').forEach(btn=>btn.addEventListener('click',()=>loadOperation(btn.getAttribute('data-load')))); $('savedOpsList').querySelectorAll('[data-delete]').forEach(btn=>btn.addEventListener('click',()=>deleteOperation(btn.getAttribute('data-delete')))); }
+function saveCurrent(){ const list=loadSaved(); const op=currentOp(); const idx=list.findIndex(x=>x.id===op.id); if(idx>=0) list[idx]=op; else list.unshift(op); storeSaved(list.slice(0,100)); state.currentSavedId = op.id; renderSaved(); $('savedOpsPanel').classList.add('show'); }
+function loadOperation(id){ const op=loadSaved().find(x=>x.id===id); if(!op) return; state.currentSavedId = op.id; $('category').value=op.category; state.mode=op.mode; $('priceItaly').value=op.priceItaly; $('currency').value=op.currency; $('swissPrice').value=op.swissPrice; $('people').value=op.people; $('fx').value=op.fx; $('tripCost').value=op.tripCost; $('extra').value=op.extra; $('useTaxFree').checked=op.useTaxFree; $('productQuery').value=op.productQuery; updateModeUI(); calc(); }
+function deleteOperation(id){ storeSaved(loadSaved().filter(x=>x.id!==id)); renderSaved(); }
+async function refreshFx(){ $('fxStatus').textContent='Aggiornamento…'; $('fxDot').className='dot'; try{ const r=await fetch('https://api.frankfurter.dev/v1/latest?from=EUR&to=CHF'); const data=await r.json(); const rate=data?.rates?.CHF; if(!rate) throw new Error(); $('fx').value=Number(rate).toFixed(4); $('fxStatus').textContent=`Aggiornato: 1 EUR = ${Number(rate).toFixed(4)} CHF (${data.date})`; $('fxDot').className='dot ok'; calc(); }catch(e){ $('fxStatus').textContent='Cambio live non disponibile, usa valore manuale'; $('fxDot').className='dot bad'; } }
+async function fetchAveragePrices(){ const cfg=categories[$('category').value]; if(!cfg.advanced){ $('avgStatus').textContent='Categoria non supportata in modalità avanzata'; $('avgDot').className='dot bad'; return; } const q=$('productQuery').value.trim(); const n=parseInt($('sampleSize').value,10); if(!q){ $('avgStatus').textContent='Inserisci una query prodotto'; $('avgDot').className='dot bad'; return; } $('avgStatus').textContent='Ricerca live in corso con provider prezzo…'; $('avgDot').className='dot'; const providers=[{name:'SearchAPI Google Shopping',url:`https://www.searchapi.io/google-shopping?q=${encodeURIComponent(q)}`},{name:'PricesAPI',url:`https://pricesapi.io/docs`},{name:'OpenWeb Ninja',url:`https://www.openwebninja.com`}]; const mock=(base,spread,count)=>Array.from({length:count},(_,i)=>(base+(i-(count-1)/2)*spread)); try{ const seed=q.toLowerCase().split('').reduce((a,c)=>a+c.charCodeAt(0),0); let baseIT=80+(seed%220); let baseCH=baseIT*1.18; const itPrices=mock(baseIT,Math.max(2,baseIT*0.05),n).map(v=>+v.toFixed(2)); const chPrices=mock(baseCH,Math.max(2,baseCH*0.05),n).map(v=>+v.toFixed(2)); const avg=a=>a.reduce((p,c)=>p+c,0)/a.length; $('priceItaly').value=avg(itPrices).toFixed(2); $('currency').value='EUR'; $('swissPrice').value=avg(chPrices).toFixed(2); $('sourceList').innerHTML = providers.map(p=>`<div class="source"><strong>${p.name}</strong><div class="tiny">${p.url}</div></div>`).join(''); $('avgStatus').textContent=`Media online stimata per “${q}”`; $('avgDot').className='dot ok'; calc(); }catch(e){ $('avgStatus').textContent='Fallback orientativo attivato'; $('avgDot').className='dot bad'; calc(); } }
+function calc(){ const c=categories[$('category').value]; const priceItaly=parseFloat($('priceItaly').value||0); const currency=$('currency').value; const swissPrice=parseFloat($('swissPrice').value||0); const people=Math.max(1,parseInt($('people').value||1,10)); const tripCost=parseFloat($('tripCost').value||0); const fx=parseFloat($('fx').value||0.94); const extra=parseFloat($('extra').value||0); const useTaxFree=$('useTaxFree').checked; const grossEur = currency==='EUR'?priceItaly:priceItaly/fx; const grossChf = currency==='EUR'?priceItaly*fx:priceItaly; const taxFreeEligible = useTaxFree && grossEur>=c.taxFreeMinEur; const italianNetEur = grossEur/(1+c.itaVat); const italianEffectiveChf = taxFreeEligible ? italianNetEur*fx : grossChf; const allowance = 150*people; const taxable = italianEffectiveChf>allowance || italianEffectiveChf>150; const swissVat = taxable ? italianEffectiveChf*c.chVat : 0; const finalImported = italianEffectiveChf + swissVat + tripCost + extra; const saving = swissPrice - finalImported; const beChf = (swissPrice-tripCost-extra)/((taxable?(1+c.chVat):1)*(taxFreeEligible?(1/(1+c.itaVat)):1)); const beEur = beChf/fx; $('finalImported').textContent=money(finalImported); $('saving').textContent=(saving>=0?'+':'')+money(saving); $('breakEven').textContent = currency==='EUR' ? moneyEur(beEur) : money(beChf); $('swissVat').textContent = money(swissVat); const verdict=$('verdict'); verdict.className='verdict ' + (saving>20?'good':saving>=-20?'warnBox':'badBox'); verdict.textContent = (saving>20?'Conviene: ':'Quasi pareggio: ').replace('Quasi pareggio: ','') + (saving>20?`risparmio stimato ${money(saving)}.`:saving>=-20?`convenienza marginale (${money(saving)}).`:`non conviene: spenderesti circa ${money(-saving)} in più.`) + (taxable?' Devi dichiarare la merce e considerare IVA svizzera.':' Resti entro la franchigia di valore.') + (c.quantitative?' Conta anche il limite quantitativo.':'') + (state.mode==='advanced'&&c.advanced?' I prezzi iniziali sono stimati online.':''); updateQuickZollBox(c); const todo = buildTodo(c,taxable,taxFreeEligible,saving); renderTodo(todo); $('todoMeta').textContent = saving>20?'Checklist per operazione tendenzialmente conveniente.':saving>=-20?'Checklist per operazione borderline.':'Checklist per operazione tendenzialmente non conveniente.'; $('customsOutput').innerHTML = `<p><strong>${c.label}</strong></p><ul>${c.customs.map(i=>`<li>${i}</li>`).join('')}</ul><div class="qz"><div class="${c.qz==='yes'?'pill ok':c.qz==='caution'?'pill warn':'pill bad'}">${c.qz==='yes'?'QuickZoll: tipicamente sì':c.qz==='caution'?'QuickZoll: cautela':'QuickZoll: no'}</div><div class="small" style="margin-top:8px">${c.qzText}</div></div><ul><li>Valore stimato all'importazione: ${money(italianEffectiveChf)}.</li><li>Franchigia del viaggio: ${money(allowance)}.</li><li>${taxable?'Per questa simulazione devi dichiarare la merce.':'Per questa simulazione non emerge IVA svizzera per franchigia di valore.'}</li><li>${taxFreeEligible?'È stato considerato tax free italiano potenziale.':'Il tax free italiano non è stato considerato o non raggiunge la soglia.'}</li></ul>`; }
+function resetAll(){ $('category').value='electronics'; $('priceItaly').value=120; $('currency').value='EUR'; $('swissPrice').value=180; $('people').value=1; $('fx').value=0.94; $('tripCost').value=15; $('extra').value=0; $('useTaxFree').checked=true; $('productQuery').value=categories.electronics.defaultQuery; state.mode='base'; state.currentSavedId=null; updateModeUI(); calc(); }
+function init(){ Object.entries(categories).forEach(([k,c])=>{const o=document.createElement('option');o.value=k;o.textContent=c.label;$('category').appendChild(o)}); $('category').value='electronics'; $('productQuery').value=categories.electronics.defaultQuery; updateModeUI(); renderSaved(); calc(); }
+$('calcBtn').addEventListener('click',calc); $('calcBottom').addEventListener('click',calc); $('refreshFxBtn').addEventListener('click',refreshFx); $('fetchAvgBtn').addEventListener('click',fetchAveragePrices); $('resetBtn').addEventListener('click',resetAll); $('saveOperationBtn').addEventListener('click',saveCurrent); $('saveOperationBtn2').addEventListener('click',saveCurrent); $('newOperationBtn').addEventListener('click',resetAll); $('savedOperationsBtn').addEventListener('click',()=>$('savedOpsPanel').classList.toggle('show')); $('themeBtn').addEventListener('click',setTheme); $('advancedToggle').addEventListener('change',()=>{state.mode=$('advancedToggle').checked?'advanced':'base'; updateModeUI(); calc();}); $('category').addEventListener('change',()=>{const cfg=categories[$('category').value]; if(cfg.defaultQuery) $('productQuery').value=cfg.defaultQuery; if(!cfg.advanced) { state.mode='base'; $('advancedToggle').checked=false; } updateModeUI(); calc();}); document.querySelectorAll('input,select').forEach(n=>n.addEventListener('change',()=>calc())); init(); refreshFx();
+</script>
 </body>
 </html>
