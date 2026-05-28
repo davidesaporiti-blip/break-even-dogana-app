@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="it" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Break-even Italia → Ticino V5</title>
+  <style>
+    :root,[data-theme="light"]{--bg:#f7f6f2;--surface:#faf9f6;--surface2:#fff;--surface3:#f1eeea;--border:#d8d3cb;--text:#29251e;--muted:#68625a;--primary:#01696f;--ok:#4a7d25;--warn:#986025;--bad:#a23d78;--shadow:0 10px 26px rgba(0,0,0,.08);--radius:18px;--sidebar:220px}
+    [data-theme="dark"]{--bg:#161514;--surface:#1d1c1a;--surface2:#22211f;--surface3:#252421;--border:#3a3834;--text:#e9e3db;--muted:#b6afa6;--primary:#4da0aa;--ok:#8fcb6b;--warn:#d09a69;--bad:#dd8fbe;--shadow:0 10px 26px rgba(0,0,0,.30)}
+    *{box-sizing:border-box} html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif} button,input,select{font:inherit;color:inherit} a{color:var(--primary)}
+    .app{margin-left:var(--sidebar);padding:16px 16px 90px;max-width:1240px}.sidebar{position:fixed;left:0;top:0;bottom:0;width:var(--sidebar);padding:16px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;gap:10px;z-index:20}.sidebtn{min-height:48px;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-weight:800;text-align:left}.sidebtn.primary{background:var(--primary);color:#fff;border-color:transparent}.card{background:var(--surface);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow);padding:16px}.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:14px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:grid;gap:6px;margin-bottom:10px}.field input,.field select{min-height:48px;border-radius:14px;border:1px solid var(--border);background:var(--surface2);padding:10px 12px}.btn{min-height:46px;padding:0 14px;border-radius:999px;border:1px solid var(--border);background:var(--surface2);cursor:pointer;font-weight:800}.btn.cta{background:var(--primary);color:#fff;border-color:transparent}.actions{display:flex;gap:10px;flex-wrap:wrap}.hidden{display:none !important}.tiny{font-size:12px;color:var(--muted)} .small{font-size:13px;color:var(--muted)} .title{font-weight:900;font-size:1.4rem;margin:0 0 8px}.hero{margin-bottom:14px}.status{padding:10px 12px;border:1px solid var(--border);border-radius:14px;background:var(--surface3);margin-top:10px}.list{display:grid;gap:10px}.op{padding:12px;border:1px solid var(--border);border-radius:16px;background:var(--surface3)}.opTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.pill{display:inline-flex;padding:5px 10px;border-radius:999px;font-size:12px;font-weight:800}.pill.ok{background:color-mix(in oklab,var(--ok) 14%,var(--surface));color:var(--ok)}.pill.warn{background:color-mix(in oklab,var(--warn) 14%,var(--surface));color:var(--warn)}.pill.bad{background:color-mix(in oklab,var(--bad) 14%,var(--surface));color:var(--bad)}.bottom{position:fixed;left:0;right:0;bottom:0;background:color-mix(in oklab,var(--bg) 90%,transparent);backdrop-filter:blur(10px);border-top:1px solid var(--border);padding:10px 16px}.bottomInner{margin-left:var(--sidebar);display:flex;justify-content:space-between;gap:10px;align-items:center;max-width:1240px}@media(max-width:980px){.sidebar{position:sticky;top:0;width:auto;flex-direction:row;overflow:auto}.app,.bottomInner{margin-left:0}.grid,.row{grid-template-columns:1fr}.bottomInner{flex-direction:column;align-items:stretch}}
+  </style>
+</head>
+<body>
+  <aside class="sidebar">
+    <button class="sidebtn primary" id="navLogin">Login</button>
+    <button class="sidebtn" id="navDash">Dashboard</button>
+    <button class="sidebtn" id="navSaved">Operazioni Salvate</button>
+    <button class="sidebtn" id="themeBtn">Tema</button>
+    <div class="tiny">V5 con Firebase Auth + Firestore per utente.</div>
+  </aside>
+  <main class="app">
+    <section class="card hero">
+      <div class="title">Break-even Italia → Ticino V5</div>
+      <div class="small">Login email/password o Google, dashboard privata e salvataggi per utente. Gli utenti non autenticati vedono solo la schermata di accesso.</div>
+    </section>
+    <section class="grid" id="authView">
+      <div class="card">
+        <h2>Accesso</h2>
+        <div class="field"><label>Email</label><input id="email" type="email" placeholder="nome@dominio.ch"></div>
+        <div class="field"><label>Password</label><input id="password" type="password" placeholder="••••••••"></div>
+        <div class="actions"><button class="btn cta" id="signupBtn">Registrati</button><button class="btn" id="loginBtn">Login</button><button class="btn" id="googleBtn">Entra con Google</button></div>
+        <div class="status" id="authStatus">Non autenticato.</div>
+      </div>
+      <div class="card">
+        <h2>Note tecniche</h2>
+        <div class="small">Dopo il login, i dati vengono letti e scritti in Firestore nella sottocollezione users/{uid}/operations.</div>
+        <div class="tiny" style="margin-top:10px">Regola Firestore: request.auth.uid == uid.</div>
+      </div>
+    </section>
+
+    <section class="grid hidden" id="dashView" style="margin-top:14px">
+      <div class="card">
+        <h2>Dashboard Operazione</h2>
+        <div class="row">
+          <div class="field"><label>Categoria</label><select id="category"><option value="electronics">Elettronica / elettrodomestici</option><option value="clothing">Abbigliamento / scarpe</option><option value="alcohol">Alcolici / vino / superalcolici</option><option value="furniture">Mobili / casa</option></select></div>
+          <div class="field"><label>Modalità</label><select id="mode"><option value="base">Base</option><option value="advanced">Avanzata</option></select></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>Prezzo Italia</label><input id="priceItaly" type="number" step="0.01" value="120"></div>
+          <div class="field"><label>Prezzo Svizzera</label><input id="swissPrice" type="number" step="0.01" value="180"></div>
+        </div>
+        <div class="row">
+          <div class="field"><label>Persone</label><input id="people" type="number" min="1" value="1"></div>
+          <div class="field"><label>Cambio EUR→CHF</label><input id="fx" type="number" step="0.0001" value="0.94"></div>
+        </div>
+        <div class="actions"><button class="btn cta" id="calcBtn">Calcola</button><button class="btn" id="saveOpBtn">Salva Operazione</button><button class="btn" id="logoutBtn">Logout</button></div>
+        <div class="status" id="calcStatus">Pronto.</div>
+        <div class="status" id="userStatus">Utente: -</div>
+      </div>
+      <div class="card">
+        <h2>Esito</h2>
+        <div class="status" id="summaryBox">Nessun calcolo ancora.</div>
+        <div class="status" id="quickzollBox">QuickZoll: verifica caso</div>
+        <div class="status" id="todoBox">To-do: comparirà qui.</div>
+      </div>
+    </section>
+
+    <section class="card hidden" id="savedView" style="margin-top:14px">
+      <h2>Operazioni Salvate</h2>
+      <div class="tiny">Ogni utente vede solo le sue operazioni.</div>
+      <div class="list" id="savedList" style="margin-top:10px"></div>
+    </section>
+  </main>
+  <div class="bottom"><div class="bottomInner"><div class="tiny">Non autenticato: nessuna dashboard visibile. Autenticato: dati segregati per utente.</div><button class="btn cta" id="calcBottom">Calcola</button></div></div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js';
+import { getAuth, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, signOut } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js';
+import { getFirestore, doc, getDoc, collection, query, orderBy, serverTimestamp, addDoc, deleteDoc, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyDr090FDvfOHnQ9FgWqaBv2b_67GyHuLec',
+  authDomain: 'break-even-dogana-app.firebaseapp.com',
+  projectId: 'break-even-dogana-app',
+  storageBucket: 'break-even-dogana-app.firebasestorage.app',
+  messagingSenderId: '131467011513',
+  appId: '1:131467011513:web:4580bb41a9c98bd8aec268',
+  measurementId: 'G-XPN2CPC6F7'
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const provider = new GoogleAuthProvider();
+const $ = id => document.getElementById(id);
+let currentUser = null;
+let currentCalc = null;
+let currentQuick = '';
+let currentTodo = '';
+
+const cats = {
+  electronics:{label:'Elettronica / elettrodomestici',qz:'yes',advanced:true},
+  clothing:{label:'Abbigliamento / scarpe',qz:'yes',advanced:true},
+  alcohol:{label:'Alcolici / vino / superalcolici',qz:'yes',advanced:true},
+  furniture:{label:'Mobili / casa',qz:'yes',advanced:false}
+};
+function money(v){ return new Intl.NumberFormat('it-CH',{style:'currency',currency:'CHF',maximumFractionDigits:2}).format(v) }
+function showViews(user){ $('authView').classList.toggle('hidden', !!user); $('dashView').classList.toggle('hidden', !user); $('savedView').classList.toggle('hidden', !user); $('userStatus').textContent = user ? `Utente: ${user.email || user.displayName || user.uid}` : 'Utente: -'; $('authStatus').textContent = user ? 'Autenticato.' : 'Non autenticato.'; }
+function calcCore(){ const c = cats[$('category').value]; const priceItaly = parseFloat($('priceItaly').value||0); const swissPrice = parseFloat($('swissPrice').value||0); const people = Math.max(1, parseInt($('people').value||1,10)); const fx = parseFloat($('fx').value||0.94); const mode = $('mode').value; const italianChf = priceItaly * fx; const allowance = 150 * people; const taxable = italianChf > allowance; const chVat = 0.081; const finalImported = italianChf + (taxable ? italianChf * chVat : 0); const saving = swissPrice - finalImported; currentCalc = { category:$('category').value, mode, priceItaly, swissPrice, people, fx, finalImported, saving, taxable }; currentQuick = c.qz === 'yes' ? 'QuickZoll: tipicamente sì' : 'QuickZoll: cautela'; currentTodo = saving > 20 ? 'Conviene: salva e confronta con altri casi.' : saving >= -20 ? 'Borderline: controlla costi e limiti.' : 'Non conviene: valuta di non acquistare.'; $('summaryBox').textContent = `Costo finale ${money(finalImported)} | Risparmio ${money(saving)} | ${taxable ? 'Da dichiarare' : 'Entro franchigia'}`; $('quickzollBox').textContent = currentQuick; $('todoBox').textContent = currentTodo; $('calcStatus').textContent = 'Calcolo aggiornato.'; }
+async function refreshSaved(){ if(!currentUser) return; const q = query(collection(db,'users',currentUser.uid,'operations'), orderBy('createdAt','desc')); const snap = await getDocs(q); $('savedList').innerHTML = snap.empty ? '<div class="tiny">Nessuna operazione salvata.</div>' : snap.docs.map(d=>{ const o=d.data(); return `<div class="op"><div class="opTop"><div><strong>${cats[o.category]?.label||o.category}</strong><div class="tiny">${o.createdAt?.toDate ? o.createdAt.toDate().toLocaleString('it-IT') : ''}</div></div><button class="btn" data-load="${d.id}">Carica</button></div><div class="small" style="margin-top:8px">${o.summary}</div><div class="actions" style="margin-top:8px"><button class="btn" data-del="${d.id}">Elimina</button></div></div>`; }).join(''); $('savedList').querySelectorAll('[data-load]').forEach(b=>b.addEventListener('click',async()=>{ const s = await getDoc(doc(db,'users',currentUser.uid,'operations',b.dataset.load)); if(!s.exists()) return; const o=s.data(); $('category').value=o.category; $('mode').value=o.mode; $('priceItaly').value=o.priceItaly; $('swissPrice').value=o.swissPrice; $('people').value=o.people; $('fx').value=o.fx; calcCore(); })); $('savedList').querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',async()=>{ await deleteDoc(doc(db,'users',currentUser.uid,'operations',b.dataset.del)); refreshSaved(); })); }
+async function saveOperation(){ if(!currentUser || !currentCalc){ $('calcStatus').textContent='Prima esegui login e calcolo.'; return; } const payload = { ...currentCalc, quickzoll: currentQuick, todo: currentTodo, summary: $('summaryBox').textContent, uid: currentUser.uid, email: currentUser.email || null, createdAt: serverTimestamp() }; await addDoc(collection(db,'users',currentUser.uid,'operations'), payload); await refreshSaved(); }
+
+$('signupBtn').onclick = async()=>{ try{ await createUserWithEmailAndPassword(auth,$('email').value,$('password').value); }catch(e){ $('authStatus').textContent = e.message; } };
+$('loginBtn').onclick = async()=>{ try{ await signInWithEmailAndPassword(auth,$('email').value,$('password').value); }catch(e){ $('authStatus').textContent = e.message; } };
+$('googleBtn').onclick = async()=>{ try{ await signInWithPopup(auth,provider); }catch(e){ $('authStatus').textContent = e.message; } };
+$('logoutBtn').onclick = async()=>signOut(auth);
+$('calcBtn').onclick = calcCore; $('calcBottom').onclick = calcCore; $('saveOpBtn').onclick = saveOperation;
+$('themeBtn').onclick = ()=>document.documentElement.setAttribute('data-theme',document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
+$('navLogin').onclick = ()=>$('authView').scrollIntoView({behavior:'smooth'}); $('navDash').onclick = ()=>$('dashView').scrollIntoView({behavior:'smooth'}); $('navSaved').onclick = ()=>$('savedView').scrollIntoView({behavior:'smooth'});
+onAuthStateChanged(auth, user=>{ currentUser = user || null; showViews(currentUser); if(currentUser) refreshSaved(); });
+</script>
+</body></html>
