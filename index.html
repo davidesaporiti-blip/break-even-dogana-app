@@ -1,5 +1,7 @@
 <!doctype html>
 <html lang="it" data-theme="light">
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -31,6 +33,14 @@
       <div class="title">Operazioni</div>
       <div class="tiny">V4.3: spalla sinistra, salvataggi, caricamento, to-do intelligente</div>
     </div>
+    <div id="authBox" class="opCard" style="padding:10px">
+  <div id="authState" class="tiny">Non autenticato</div>
+  <div class="opBtns" style="margin-top:8px">
+    <button class="btn sm" id="googleLoginBtn">Login Google</button>
+    <button class="btn sm" id="logoutBtn">Logout</button>
+  </div>
+  <div id="userInfo" class="tiny" style="margin-top:8px"></div>
+</div>
     <button class="sidebtn primary" id="newOperationBtn">Nuova Operazione</button>
     <button class="sidebtn" id="savedOperationsBtn">Operazioni Salvate</button>
     <button class="sidebtn" id="themeBtn">Tema chiaro/scuro</button>
@@ -162,6 +172,18 @@ const categories = {
   medicine:{label:'Medicinali da banco',itaVat:0.10,chVat:0.026,taxFreeMinEur:70,quantitative:false,qz:'caution',advanced:false,qzText:'Meglio cautela: alcuni medicinali possono richiedere controlli o autorizzazioni.',customs:['Verifica sempre eventuali restrizioni.','Conserva confezione e scontrino.','Per medicinali particolari verifica prima l’importazione personale.','Se supera la franchigia, va dichiarato.']}
 };
 const advancedAllowed = new Set(['electronics','clothing']);
+  const firebaseConfig = {
+  apiKey: "AIzaSyDr090FDvfOHnQ9FgWqaBv2b_67GyHuLec",
+  authDomain: "break-even-dogana-app.firebaseapp.com",
+  projectId: "break-even-dogana-app",
+  storageBucket: "break-even-dogana-app.firebasestorage.app",
+  messagingSenderId: "131467011513",
+  appId: "1:131467011513:web:4580bb41a9c98bd8aec268",
+  measurementId: "G-XPN2CPC6F7"
+};
+let auth = null;
+let googleProvider = null;
+let currentUser = null;
 const state = { mode:'base', saved:[], currentSavedId:null };
 const $ = id => document.getElementById(id);
 const STORAGE_KEY = 'operazioni-salvate-v43';
@@ -189,6 +211,29 @@ function currentOp(name){
   }
 }
 function setTheme(){ document.documentElement.setAttribute('data-theme', document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark') }
+  function initFirebaseAuth(){
+  if(!window.firebase || !firebase.apps || !firebase.apps.length){
+    firebase.initializeApp(firebaseConfig);
+  }
+  auth = firebase.auth();
+  googleProvider = new firebase.auth.GoogleAuthProvider();
+
+  auth.onAuthStateChanged(user => {
+    currentUser = user || null;
+    $('authState').textContent = user ? 'Autenticato con Google' : 'Non autenticato';
+    $('userInfo').textContent = user ? `${user.displayName || ''} ${user.email ? '• ' + user.email : ''}`.trim() : '';
+  });
+}
+
+function loginWithGoogle(){
+  if(!auth || !googleProvider) return;
+  auth.signInWithPopup(googleProvider).catch(err => alert(err.message));
+}
+
+function logoutUser(){
+  if(!auth) return;
+  auth.signOut().catch(err => alert(err.message));
+}
 function isAdvancedAllowed(cat){ return advancedAllowed.has(cat) }
 function syncAdvancedAvailability(){ const cat = $('category').value; const allowed = isAdvancedAllowed(cat); $('advancedToggle').disabled = !allowed; $('advancedToggleWrap').classList.toggle('disabledHint', !allowed); $('advancedToggleNote').textContent = allowed ? '(prezzi medi online)' : '(non disponibile per questa categoria)'; if(!allowed && state.mode === 'advanced'){ state.mode = 'base'; $('advancedToggle').checked = false; } if(!allowed) $('advancedToggle').checked = false; updateModeUI(); }
 function updateModeUI(){ const cfg = categories[$('category').value]; const adv = state.mode==='advanced' && cfg.advanced && isAdvancedAllowed($('category').value); $('advancedFields').classList.toggle('hidden', !adv); $('basicFields').classList.toggle('hidden', adv); }
@@ -240,7 +285,7 @@ async function fetchAveragePrices(){ const cfg=categories[$('category').value]; 
 function calc(){ const c=categories[$('category').value]; const priceItaly=parseFloat($('priceItaly').value||0); const currency=$('currency').value; const swissPrice=parseFloat($('swissPrice').value||0); const people=Math.max(1,parseInt($('people').value||1,10)); const tripCost=parseFloat($('tripCost').value||0); const fx=parseFloat($('fx').value||0.94); const extra=parseFloat($('extra').value||0); const useTaxFree=$('useTaxFree').checked; const grossEur = currency==='EUR'?priceItaly:priceItaly/fx; const grossChf = currency==='EUR'?priceItaly*fx:priceItaly; const taxFreeEligible = useTaxFree && grossEur>=c.taxFreeMinEur; const italianNetEur = grossEur/(1+c.itaVat); const italianEffectiveChf = taxFreeEligible ? italianNetEur*fx : grossChf; const allowance = 150*people; const taxable = italianEffectiveChf>allowance || italianEffectiveChf>150; const swissVat = taxable ? italianEffectiveChf*c.chVat : 0; const finalImported = italianEffectiveChf + swissVat + tripCost + extra; const saving = swissPrice - finalImported; const beChf = (swissPrice-tripCost-extra)/((taxable?(1+c.chVat):1)*(taxFreeEligible?(1/(1+c.itaVat)):1)); const beEur = beChf/fx; $('finalImported').textContent=money(finalImported); $('saving').textContent=(saving>=0?'+':'')+money(saving); $('breakEven').textContent = currency==='EUR' ? moneyEur(beEur) : money(beChf); $('swissVat').textContent = money(swissVat); const verdict=$('verdict'); verdict.className='verdict ' + (saving>20?'good':saving>=-20?'warnBox':'badBox'); verdict.textContent = (saving>20?'Conviene: ':'Quasi pareggio: ').replace('Quasi pareggio: ','') + (saving>20?`risparmio stimato ${money(saving)}.`:saving>=-20?`convenienza marginale (${money(saving)}).`:`non conviene: spenderesti circa ${money(-saving)} in più.`) + (taxable?' Devi dichiarare la merce e considerare IVA svizzera.':' Resti entro la franchigia di valore.') + (c.quantitative?' Conta anche il limite quantitativo.':'') + (state.mode==='advanced'&&c.advanced&&isAdvancedAllowed($('category').value)?' I prezzi iniziali sono stimati online.':''); updateQuickZollBox(c); const todo = buildTodo(c,taxable,taxFreeEligible,saving); renderTodo(todo); $('todoMeta').textContent = saving>20?'Checklist per operazione tendenzialmente conveniente.':saving>=-20?'Checklist per operazione borderline.':'Checklist per operazione tendenzialmente non conveniente.'; $('customsOutput').innerHTML = `<p><strong>${c.label}</strong></p><ul>${c.customs.map(i=>`<li>${i}</li>`).join('')}</ul><div class="qz"><div class="${c.qz==='yes'?'pill ok':c.qz==='caution'?'pill warn':'pill bad'}">${c.qz==='yes'?'QuickZoll: tipicamente sì':c.qz==='caution'?'QuickZoll: cautela':'QuickZoll: no'}</div><div class="small" style="margin-top:8px">${c.qzText}</div></div><ul><li>Valore stimato all'importazione: ${money(italianEffectiveChf)}.</li><li>Franchigia del viaggio: ${money(allowance)}.</li><li>${taxable?'Per questa simulazione devi dichiarare la merce.':'Per questa simulazione non emerge IVA svizzera per franchigia di valore.'}</li><li>${taxFreeEligible?'È stato considerato tax free italiano potenziale.':'Il tax free italiano non è stato considerato o non raggiunge la soglia.'}</li></ul>`; }
 function resetAll(){ $('category').value='electronics'; $('priceItaly').value=120; $('currency').value='EUR'; $('swissPrice').value=180; $('people').value=1; $('fx').value=0.94; $('tripCost').value=15; $('extra').value=0; $('useTaxFree').checked=true; $('productQuery').value=categories.electronics.defaultQuery; state.mode='base'; state.currentSavedId=null; syncAdvancedAvailability(); calc(); }
 function init(){ Object.entries(categories).forEach(([k,c])=>{const o=document.createElement('option');o.value=k;o.textContent=c.label;$('category').appendChild(o)}); $('category').value='electronics'; $('productQuery').value=categories.electronics.defaultQuery; syncAdvancedAvailability(); renderSaved(); calc(); }
-$('calcBtn').addEventListener('click',calc); $('calcBottom').addEventListener('click',calc); $('refreshFxBtn').addEventListener('click',refreshFx); $('fetchAvgBtn').addEventListener('click',fetchAveragePrices); $('resetBtn').addEventListener('click',resetAll); $('saveOperationBtn').addEventListener('click',saveCurrent); $('saveOperationBtn2').addEventListener('click',saveCurrent); $('newOperationBtn').addEventListener('click',resetAll); $('savedOperationsBtn').addEventListener('click',()=>$('savedOpsPanel').classList.toggle('show')); $('themeBtn').addEventListener('click',setTheme); $('advancedToggle').addEventListener('change',()=>{ if($('advancedToggle').disabled) return; state.mode=$('advancedToggle').checked?'advanced':'base'; updateModeUI(); calc();}); $('category').addEventListener('change',()=>{const cfg=categories[$('category').value]; if(cfg.defaultQuery) $('productQuery').value=cfg.defaultQuery; syncAdvancedAvailability(); calc();}); document.querySelectorAll('input,select').forEach(n=>n.addEventListener('change',()=>calc())); init(); refreshFx();
-</script>
+$('calcBtn').addEventListener('click',calc); $('calcBottom').addEventListener('click',calc); $('refreshFxBtn').addEventListener('click',refreshFx); $('fetchAvgBtn').addEventListener('click',fetchAveragePrices); $('resetBtn').addEventListener('click',resetAll); $('saveOperationBtn').addEventListener('click',saveCurrent); $('saveOperationBtn2').addEventListener('click',saveCurrent); $('newOperationBtn').addEventListener('click',resetAll); $('savedOperationsBtn').addEventListener('click',()=>$('savedOpsPanel').classList.toggle('show')); $('themeBtn').addEventListener('click',setTheme);$('googleLoginBtn').addEventListener('click',loginWithGoogle);
+$('logoutBtn').addEventListener('click',logoutUser); $('advancedToggle').addEventListener('change',()=>{ if($('advancedToggle').disabled) return; state.mode=$('advancedToggle').checked?'advanced':'base'; updateModeUI(); calc();}); $('category').addEventListener('change',()=>{const cfg=categories[$('category').value]; if(cfg.defaultQuery) $('productQuery').value=cfg.defaultQuery; syncAdvancedAvailability(); calc();}); document.querySelectorAll('input,select').forEach(n=>n.addEventListener('change',()=>calc())); init(); initFirebaseAuth(); refreshFx();
 </body>
 </html>
