@@ -177,8 +177,40 @@ function updateModeUI(){ const cfg = categories[$('category').value]; const adv 
 function updateQuickZollBox(cfg){ $('quickzollPill').className = 'pill ' + (cfg.qz==='yes'?'ok':cfg.qz==='caution'?'warn':'bad'); $('quickzollPill').textContent = cfg.qz==='yes'?'QuickZoll: sì, in via tipica':cfg.qz==='caution'?'QuickZoll: cautela / meglio verificare':'QuickZoll: no'; $('quickzollText').textContent = cfg.qzText; }
 function buildTodo(cfg, taxable, taxFreeEligible, saving){ const items=[]; const verdict = saving>20?'conviene':saving>=-20?'borderline':'non conviene'; items.push({p:'high',t:verdict==='conviene'?'Conferma il prodotto e procedi se il prezzo resta vantaggioso.':verdict==='borderline'?'Sei vicino al pareggio: ricontrolla costi e varianti.':'Prima di partire verifica se il prezzo svizzero è davvero migliore.',d:false}); items.push({p:cfg.qz==='yes'?'low':'high',t:cfg.qz==='yes'?'Puoi usare QuickZoll se il bene è per uso privato o regalo e non ha restrizioni speciali.':'Verifica se per questa categoria è preferibile il valico presidiato.',d:false}); if(taxFreeEligible) items.push({p:'med',t:'Chiedi il modulo tax free e fai validare l’uscita UE.',d:false}); if(taxable) items.push({p:'high',t:'Prepara la dichiarazione doganale: in questa simulazione emerge IVA svizzera da pagare.',d:false}); else items.push({p:'low',t:'Resti entro la franchigia di valore, ma conserva comunque la prova d’acquisto.',d:false}); if(cfg.quantitative) items.push({p:'high',t:'Controlla anche i limiti quantitativi della categoria prima del rientro.',d:false}); if(cfg.qz==='caution') items.push({p:'med',t:'Per merce sensibile o aliquota ridotta, valuta la dichiarazione verbale a valico.',d:false}); items.push({p:'med',t:'Tieni con te scontrino o fattura e, se usi QuickZoll, il riferimento della dichiarazione.',d:false}); items.push({p:'low',t:'Se il bene è commerciale, temporaneo o soggetto a permessi, non usare QuickZoll.',d:false}); return items; }
 function renderTodo(items){ $('todoList').innerHTML = items.map((it,idx)=>`<label class="todoItem prio-${it.p}" data-idx="${idx}"><input type="checkbox"><div><strong>${it.p==='high'?'Priorità alta':it.p==='med'?'Priorità media':'Priorità bassa'}</strong><div class="small">${it.t}</div></div><div class="tiny">✓</div></label>`).join(''); $('todoList').querySelectorAll('input').forEach(inp=>inp.addEventListener('change',e=>e.target.closest('.todoItem').classList.toggle('done',e.target.checked))); }
-function renderSaved(){ const list=loadSaved(); $('savedOpsList').innerHTML = list.length ? list.map(op=>`<div class="opCard"><div class="opHead"><div><div class="opTitle">${categories[op.category]?.label||op.category}</div><div class="opMeta">${new Date(op.ts).toLocaleString('it-IT')}</div></div><div class="tiny">${op.mode==='advanced'?'Avanzata':'Base'}</div></div><div class="small" style="margin-top:8px">${op.summary}</div><div class="opBtns"><button class="btn sm" data-load="${op.id}">Carica</button><button class="btn sm" data-delete="${op.id}">Elimina</button></div></div>`).join('') : '<div class="tiny">Nessuna operazione salvata.</div>'; $('savedOpsList').querySelectorAll('[data-load]').forEach(btn=>btn.addEventListener('click',()=>loadOperation(btn.getAttribute('data-load')))); $('savedOpsList').querySelectorAll('[data-delete]').forEach(btn=>btn.addEventListener('click',()=>deleteOperation(btn.getAttribute('data-delete')))); }
-function saveCurrent(){ const list=loadSaved(); const op=currentOp(); const idx=list.findIndex(x=>x.id===op.id); if(idx>=0) list[idx]=op; else list.unshift(op); storeSaved(list.slice(0,100)); state.currentSavedId = op.id; renderSaved(); $('savedOpsPanel').classList.add('show'); }
+function renderSaved(){ const list = loadSaved();
+  $('savedOpsList').innerHTML = list.length ? list.map(op => `
+    <div class="opCard">
+      <div class="opHead">
+        <div>
+          <div class="opTitle">${op.name || categories[op.category]?.label || op.category}</div>
+          <div class="opMeta">${new Date(op.ts).toLocaleString('it-IT')}</div>
+        </div>
+        <div class="tiny">${op.mode==='advanced'?'Avanzata':'Base'}</div>
+      </div>
+      <div class="small" style="margin-top:8px">${op.summary}</div>
+      <div class="opBtns">
+        <button class="btn sm" data-load="${op.id}">Carica</button>
+        <button class="btn sm" data-delete="${op.id}">Elimina</button>
+      </div>
+    </div>`).join('') : '<div class="tiny">Nessuna operazione salvata.</div>';
+  $('savedOpsList').querySelectorAll('[data-load]').forEach(btn=>btn.addEventListener('click',()=>loadOperation(btn.getAttribute('data-load'))));
+  $('savedOpsList').querySelectorAll('[data-delete]').forEach(btn=>btn.addEventListener('click',()=>deleteOperation(btn.getAttribute('data-delete')))); }
+function saveCurrent(){ const name = prompt('Inserisci il nome dell\'operazione da salvare:', '');
+  if(name === null) return;
+  const trimmed = name.trim();
+  if(!trimmed){
+    alert('Inserisci un nome valido per l\'operazione.');
+    return;
+  }
+  const list = loadSaved();
+  const op = currentOp(trimmed);
+  const idx = list.findIndex(x => x.id === op.id);
+  if(idx >= 0) list[idx] = op;
+  else list.unshift(op);
+  storeSaved(list.slice(0,100));
+  state.currentSavedId = op.id;
+  renderSaved();
+  $('savedOpsPanel').classList.add('show'); }
 function loadOperation(id){ const op=loadSaved().find(x=>x.id===id); if(!op) return; state.currentSavedId = op.id; $('category').value=op.category; state.mode=op.mode; $('priceItaly').value=op.priceItaly; $('currency').value=op.currency; $('swissPrice').value=op.swissPrice; $('people').value=op.people; $('fx').value=op.fx; $('tripCost').value=op.tripCost; $('extra').value=op.extra; $('useTaxFree').checked=op.useTaxFree; $('productQuery').value=op.productQuery; syncAdvancedAvailability(); calc(); }
 function deleteOperation(id){ storeSaved(loadSaved().filter(x=>x.id!==id)); renderSaved(); }
 async function refreshFx(){ $('fxStatus').textContent='Aggiornamento…'; $('fxDot').className='dot'; try{ const r=await fetch('https://api.frankfurter.dev/v1/latest?from=EUR&to=CHF'); const data=await r.json(); const rate=data?.rates?.CHF; if(!rate) throw new Error(); $('fx').value=Number(rate).toFixed(4); $('fxStatus').textContent=`Aggiornato: 1 EUR = ${Number(rate).toFixed(4)} CHF (${data.date})`; $('fxDot').className='dot ok'; calc(); }catch(e){ $('fxStatus').textContent='Cambio live non disponibile, usa valore manuale'; $('fxDot').className='dot bad'; } }
